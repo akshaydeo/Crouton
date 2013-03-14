@@ -801,7 +801,7 @@ public final class Crouton {
 		text.setId(TEXT_ID);
 		text.setText(this.text);
 		//text.setTypeface(Typeface.DEFAULT_BOLD);
-		text.setTypeface(this.messageTypeface);
+		text.setTypeface(this.messageTypeface, Typeface.BOLD);
 		text.setGravity(this.style.gravity);
 
 		// set the text color if set

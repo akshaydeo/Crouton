@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  ~ Copyright 2012 Benjamin Weiss 
+  ~ Copyright 2012 - 2013 Benjamin Weiss 
   ~ Copyright 2012 Neofonie Mobile GmbH
   ~
   ~     Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <name>Crouton Parent</name>
   <artifactId>crouton-parent</artifactId>
-  <version>1.6</version>
+  <version>1.8.1</version>
   <groupId>de.keyboardsurfer.android.widget</groupId>
   <packaging>pom</packaging>
 
@@ -32,34 +32,33 @@
     <developer>
       <id>keyboardsurfer</id>
       <name>Benjamin Weiss</name>
-		</developer>
-	</developers>
+    </developer>
+  </developers>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
-	<scm>
-		<url>git@github.com:keyboardsurfer/Crouton.git</url>
-		<developerConnection>scm:git:git@github.com:keyboardsurfer/Crouton.git</developerConnection>
-		<connection>scm:git:git@github.com:keyboardsurfer/Crouton.git</connection>
-	</scm>
+  <scm>
+    <url>git@github.com:keyboardsurfer/Crouton.git</url>
+    <developerConnection>scm:git:git@github.com:keyboardsurfer/Crouton.git</developerConnection>
+    <connection>scm:git:git@github.com:keyboardsurfer/Crouton.git</connection>
+  </scm>
 
 	<modules>
 		<module>library</module>
 	<!--	<module>sample</module>-->
 	</modules>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<android.version>4.1.1.4</android.version>
-		<android.version.platform>16</android.version.platform>
-	</properties>
-
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <android.version>4.1.1.4</android.version>
+    <android.version.platform>16</android.version.platform>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>android.support</groupId>
@@ -106,5 +105,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
 </project>

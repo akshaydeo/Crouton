@@ -7,7 +7,8 @@ Context sensitive notifications for Android
 
 **Crouton** is a class that can be used by Android developers that feel the need for an **alternative to the Context insensitive [Toast](http://developer.android.com/reference/android/widget/Toast.html)**.
 
-A Crouton will be displayed at the top of an application window.
+A Crouton will be displayed at the position the developer decides.
+Standard will be the of an application window.
 You can line up multiple Croutons for display, that will be shown one after another.
 
 You can check some features in the Crouton Demo.
@@ -17,11 +18,27 @@ You can check some features in the Crouton Demo.
          src="http://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
 </a>
 
-If you're already using Crouton and just want to download the latest version of the library, follow [this link](https://www.dropbox.com/sh/9vlov7im38vtqe9/Kpj6KZSv0D/Crouton).
+If you're already using Crouton and just want to download the latest version of the library, follow [this link](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22de.keyboardsurfer.android.widget%22).
 
 ### Changelog
+#### Current version: 1.8.1
 
-#### [1.6](https://github.com/keyboardsurfer/Crouton/tree/1.6)
+####[1.8](https://github.com/keyboardsurfer/Crouton/tree/1.8)
+
+- Improves support for custom views
+- Smoothing out animations for multiple line Croutons
+- Cleans up Style
+  - Configuration is now available for non-UI information
+  - Style only holds UI-relevant information
+- Introduces DURATION_SHORT and DURATION_LONG constants
+
+####[1.7](https://github.com/keyboardsurfer/Crouton/tree/1.7)
+
+- `Crouton.setOnClickListener(OnClickListener)` has been introduced.
+- Infinite display of Crouton is possible via `Style.setDuration(Style.DURATION_INFINITE)`
+- Via `Crouton.hide(Crouton)` a Crouton can be hidden.
+
+####[1.6](https://github.com/keyboardsurfer/Crouton/tree/1.6)
 
 - Crouton now can be used on any Android device with **API level 4+**.
 - Changes the package name to `de.keyboardsurfer.android.widget`
@@ -65,7 +82,7 @@ In your Activity.onDestroy() make sure to call
     
 to cancel cancel all scheduled Croutons.
 
-This is a workaround and further description is available in #24.
+This is a workaround and further description is available in [issue #24](https://github.com/keyboardsurfer/Crouton/issues/24).
 
 ## Basic Examples
 Currently you can use the three different Style attributes displayed below out of the box:
@@ -94,12 +111,59 @@ In general you can modify
 Since [Style](https://github.com/keyboardsurfer/Crouton/blob/master/library/src/de/keyboardsurfer/android/widget/crouton/Style.java) is the general entry point for tweaking Croutons, go and see for yourself what can be done with it.
 
 
-## Building
+## Maven
+
+### From maven central
+
+Crouton is available in the maven central repository.
+
+To use crouton simply add
+
+```xml
+<dependency>
+  <artifactId>crouton</artifactId>
+  <version>${crouton.version}</version>
+  <groupId>de.keyboardsurfer.android.widget</groupId>
+</dependency>
+```
+
+to your pom.xml
+
+If you also want the sources or javadoc add the respective classifier  
+
+```xml
+  <classifier>sources</classifier>
+```
+
+or
+
+```xml
+  <classifier>javadoc</classifier>
+```
+to the dependency.
+
+If you are referencing a newer version of the Android Support Library in your application, you might want to exclude Crouton's dependency like this:
+
+```xml
+<dependency>
+	<artifactId>crouton</artifactId>
+	<version>${crouton.version}</version>
+	<groupId>de.keyboardsurfer.android.widget</groupId>
+	<exclusions>
+	    <exclusion>
+	        <groupId>com.google.android</groupId>
+	        <artifactId>support-v4</artifactId>
+	    </exclusion>
+	</exclusions>
+</dependency>
+```
+
+### DIY
 
 The build requires Maven. Operations are very simple:
 
-* `mvn -f library/pom.xml clean package` will build `jar` library;
-* `mvn clean package` will build `jar` library and sample application `apk` package;
+* `mvn -f library/pom.xml clean package` will build a `jar` library;
+* `mvn clean package` will build a `jar` library and the sample application `apk`;
 * `mvn -f library/pom.xml clean install` will put Crouton in your local Maven repository.
 
 After putting Crouton in the repository you can add it as a dependency.
@@ -107,14 +171,16 @@ After putting Crouton in the repository you can add it as a dependency.
 ```xml
 <dependency>
   <artifactId>crouton</artifactId>
-  <version>1.6</version>
+  <version>${crouton.version}</version>
   <groupId>de.keyboardsurfer.android.widget</groupId>
 </dependency>
 ```
 
 ## Contribution
 
-This section is subject to changes.
+###Questions
+
+Questions regarding Crouton can be asked on [StackOverflow, using the crouton tag](http://stackoverflow.com/questions/tagged/crouton).
 
 ### Pull requests welcome
 

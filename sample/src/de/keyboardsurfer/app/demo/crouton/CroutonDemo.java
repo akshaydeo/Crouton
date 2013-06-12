@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Benjamin Weiss
+ * Copyright 2012 - 2013 Benjamin Weiss
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class CroutonDemo extends SherlockFragmentActivity {
   @Override
   protected void onDestroy() {
     // Workaround until there's a way to detach the Activity from Crouton while
-    // there are still some in the Queue. #
+    // there are still some in the Queue.
     Crouton.clearCroutonsForActivity(this);
     super.onDestroy();
   }

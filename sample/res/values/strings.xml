@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-	~ Copyright 2012 Benjamin Weiss
-	~
-	~ Licensed under the Apache License, Version 2.0 (the "License");
-	~ you may not use this file except in compliance with the License.
-	~ You may obtain a copy of the License at
-	~
-	~     http://www.apache.org/licenses/LICENSE-2.0
-	~
-	~ Unless required by applicable law or agreed to in writing, software
-	~ distributed under the License is distributed on an "AS IS" BASIS,
-	~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	~ See the License for the specific language governing permissions and
-	~ limitations under the License.
-	-->
+  ~ Copyright 2012 - 2013 Benjamin Weiss
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 
 <resources>
 
@@ -34,4 +34,8 @@
   <string name="disclaimer">This app is not a complete example of what is possible with Crouton, merely a short demonstration of basic features.</string>
   <string name="feedback">Feel free to provide feedback (bugs, etc) and pull requests on %1$s. Also further documentation is available there.</string>
   <string name="attributions">This app uses software licensed under the %1$s. Further information can be seen in the app\'s source code on %2$s.</string>
+  <string name="infinity_text">This Crouton will be visible until you click on it or rotate the device.</string>
+
+  <string name="custom_title">Custom Crouton</string>
+  <string name="custom_message">Even with message!</string>
 </resources>

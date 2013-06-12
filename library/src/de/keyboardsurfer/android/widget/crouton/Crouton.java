@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Benjamin Weiss
+ * Copyright 2012 - 2013 Benjamin Weiss
  * Copyright 2012 Neofonie Mobile GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +27,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -52,14 +53,16 @@ public final class Crouton {
 	private static final int TEXT_ID = 0x101;
 	private final CharSequence text;
 	private final Style style;
+	private Configuration configuration = null;
 	private final View customView;
+
+	private OnClickListener onClickListener;
 
 	private Activity activity;
 	private ViewGroup viewGroup;
 	private FrameLayout croutonView;
 	private Animation inAnimation;
 	private Animation outAnimation;
-	private Typeface messageTypeface;
 	private LifecycleCallback lifecycleCallback = null;
 
 	/**
@@ -84,23 +87,6 @@ public final class Crouton {
 		this.text = text;
 		this.style = style;
 		this.customView = null;
-	}
-
-	private Crouton(Activity activity, CharSequence text, Style style,
-			Typeface typeface) {
-		if (typeface == null)
-			throw new IllegalArgumentException("Typeface cant be null");
-		if ((activity == null) || (text == null) || (style == null)) {
-			throw new IllegalArgumentException(
-					"Null parameters are not accepted");
-		}
-
-		this.activity = activity;
-		this.viewGroup = null;
-		this.text = text;
-		this.style = style;
-		this.customView = null;
-		this.messageTypeface = typeface;
 	}
 
 	/**
@@ -166,6 +152,25 @@ public final class Crouton {
 	 *            added to.
 	 */
 	private Crouton(Activity activity, View customView, ViewGroup viewGroup) {
+		this(activity, customView, viewGroup, Configuration.DEFAULT);
+	}
+
+	/**
+	 * Creates the {@link Crouton}.
+	 * 
+	 * @param activity
+	 *            The {@link Activity} that represents the context in which the
+	 *            Crouton should exist.
+	 * @param customView
+	 *            The custom {@link View} to display
+	 * @param viewGroup
+	 *            The {@link ViewGroup} that this {@link Crouton} should be
+	 *            added to.
+	 * @param configuration
+	 *            The {@link Configuration} for this {@link Crouton}.
+	 */
+	private Crouton(final Activity activity, final View customView,
+			final ViewGroup viewGroup, final Configuration configuration) {
 		if ((activity == null) || (customView == null)) {
 			throw new IllegalArgumentException(
 					"Null parameters are not accepted");
@@ -176,6 +181,7 @@ public final class Crouton {
 		this.viewGroup = viewGroup;
 		this.style = new Style.Builder().build();
 		this.text = null;
+		this.configuration = configuration;
 	}
 
 	/**
@@ -195,27 +201,6 @@ public final class Crouton {
 	public static Crouton makeText(Activity activity, CharSequence text,
 			Style style) {
 		return new Crouton(activity, text, style);
-	}
-
-	/**
-	 * Creates a {@link Crouton} with provided text and style for a given
-	 * activity.
-	 * 
-	 * @param activity
-	 *            The {@link Activity} that the {@link Crouton} should be
-	 *            attached to.
-	 * @param text
-	 *            The text you want to display.
-	 * @param style
-	 *            The style that this {@link Crouton} should be created with.
-	 * 
-	 * @paran typeface The typeface that has to be applied to the message
-	 * 
-	 * @return The created {@link Crouton}.
-	 */
-	public static Crouton makeText(Activity activity, CharSequence text,
-			Style style, Typeface typeface) {
-		return new Crouton(activity, text, style, typeface);
 	}
 
 	/**
@@ -386,6 +371,30 @@ public final class Crouton {
 	}
 
 	/**
+	 * Creates a {@link Crouton} with provided text-resource and style for a
+	 * given activity.
+	 * 
+	 * @param activity
+	 *            The {@link Activity} that represents the context in which the
+	 *            Crouton should exist.
+	 * @param customView
+	 *            The custom {@link View} to display
+	 * @param viewGroupResId
+	 *            The resource id of the {@link ViewGroup} that this
+	 *            {@link Crouton} should be added to.
+	 * @param configuration
+	 *            The configuration for this crouton.
+	 * 
+	 * @return The created {@link Crouton}.
+	 */
+	public static Crouton make(Activity activity, View customView,
+			int viewGroupResId, final Configuration configuration) {
+		return new Crouton(activity, customView,
+				(ViewGroup) activity.findViewById(viewGroupResId),
+				configuration);
+	}
+
+	/**
 	 * Creates a {@link Crouton} with provided text and style for a given
 	 * activity and displays it directly.
 	 * 
@@ -441,6 +450,30 @@ public final class Crouton {
 			Style style, int viewGroupResId) {
 		makeText(activity, text, style,
 				(ViewGroup) activity.findViewById(viewGroupResId)).show();
+	}
+
+	/**
+	 * Creates a {@link Crouton} with provided text and style for a given
+	 * activity and displays it directly.
+	 * 
+	 * @param activity
+	 *            The {@link Activity} that represents the context in which the
+	 *            Crouton should exist.
+	 * @param text
+	 *            The text you want to display.
+	 * @param style
+	 *            The style that this {@link Crouton} should be created with.
+	 * @param viewGroupResId
+	 *            The resource id of the {@link ViewGroup} that this
+	 *            {@link Crouton} should be added to.
+	 * @param configuration
+	 *            The configuration for this Crouton.
+	 */
+	public static void showText(Activity activity, CharSequence text,
+			Style style, int viewGroupResId, final Configuration configuration) {
+		makeText(activity, text, style,
+				(ViewGroup) activity.findViewById(viewGroupResId))
+				.setConfiguration(configuration).show();
 	}
 
 	/**
@@ -552,6 +585,16 @@ public final class Crouton {
 	}
 
 	/**
+	 * Allows hiding of a previously displayed {@link Crouton}.
+	 * 
+	 * @param crouton
+	 *            The {@link Crouton} you want to hide.
+	 */
+	public static void hide(Crouton crouton) {
+		Manager.getInstance().removeCrouton(crouton);
+	}
+
+	/**
 	 * Cancels all queued {@link Crouton}s. If there is a {@link Crouton}
 	 * displayed currently, it will be the last one displayed.
 	 */
@@ -570,9 +613,7 @@ public final class Crouton {
 		Manager.getInstance().clearCroutonsForActivity(activity);
 	}
 
-	/**
-	 * Cancels a {@link Crouton} immediately.
-	 */
+	/** Cancels a {@link Crouton} immediately. */
 	public void cancel() {
 		Manager manager = Manager.getInstance();
 		manager.removeCroutonImmediately(this);
@@ -587,13 +628,14 @@ public final class Crouton {
 	}
 
 	public Animation getInAnimation() {
-		if ((this.inAnimation == null) && (this.activity != null)) {
-			if (getStyle().inAnimationResId > 0) {
+		if ((null == this.inAnimation) && (null != this.activity)) {
+			if (getConfiguration().inAnimationResId > 0) {
 				this.inAnimation = AnimationUtils.loadAnimation(getActivity(),
-						getStyle().inAnimationResId);
+						getConfiguration().inAnimationResId);
 			} else {
+				measureCroutonView();
 				this.inAnimation = DefaultAnimationsBuilder
-						.buildDefaultSlideInDownAnimation();
+						.buildDefaultSlideInDownAnimation(getView());
 			}
 		}
 
@@ -601,13 +643,13 @@ public final class Crouton {
 	}
 
 	public Animation getOutAnimation() {
-		if ((this.outAnimation == null) && (this.activity != null)) {
-			if (getStyle().outAnimationResId > 0) {
+		if ((null == this.outAnimation) && (null != this.activity)) {
+			if (getConfiguration().outAnimationResId > 0) {
 				this.outAnimation = AnimationUtils.loadAnimation(getActivity(),
-						getStyle().outAnimationResId);
+						getConfiguration().outAnimationResId);
 			} else {
 				this.outAnimation = DefaultAnimationsBuilder
-						.buildDefaultSlideOutUpAnimation();
+						.buildDefaultSlideOutUpAnimation(getView());
 			}
 		}
 
@@ -623,85 +665,169 @@ public final class Crouton {
 	}
 
 	/**
+	 * Allows setting of an {@link OnClickListener} directly to a
+	 * {@link Crouton} without having to use a custom view.
+	 * 
+	 * @param onClickListener
+	 *            The {@link OnClickListener} to set.
+	 * 
+	 * @return this {@link Crouton}.
+	 */
+	public Crouton setOnClickListener(OnClickListener onClickListener) {
+		this.onClickListener = onClickListener;
+		return this;
+	}
+
+	/**
+	 * Set the {@link Configuration} on this {@link Crouton}, prior to showing
+	 * it.
+	 * 
+	 * @param configuration
+	 *            a {@link Configuration} built using the
+	 *            {@link Configuration.Builder}.
+	 * 
+	 * @return this {@link Crouton}.
+	 */
+	public Crouton setConfiguration(final Configuration configuration) {
+		this.configuration = configuration;
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return "Crouton{" + "text=" + text + ", style=" + style
+				+ ", configuration=" + configuration + ", customView="
+				+ customView + ", onClickListener=" + onClickListener
+				+ ", activity=" + activity + ", viewGroup=" + viewGroup
+				+ ", croutonView=" + croutonView + ", inAnimation="
+				+ inAnimation + ", outAnimation=" + outAnimation
+				+ ", lifecycleCallback=" + lifecycleCallback + '}';
+	}
+
+	/**
+	 * Convenience method to get the license text for embedding within your
+	 * application.
+	 * 
+	 * @return The license text.
+	 */
+	public static String getLicenseText() {
+		return "This application uses the Crouton library.\n\n"
+				+ "Copyright 2012 - 2013 Benjamin Weiss \n"
+				+ "Copyright 2012 Neofonie Mobile GmbH\n"
+				+ "\n"
+				+ "Licensed under the Apache License, Version 2.0 (the \"License\");\n"
+				+ "you may not use this file except in compliance with the License.\n"
+				+ "You may obtain a copy of the License at\n"
+				+ "\n"
+				+ "   http://www.apache.org/licenses/LICENSE-2.0\n"
+				+ "\n"
+				+ "Unless required by applicable law or agreed to in writing, software\n"
+				+ "distributed under the License is distributed on an \"AS IS\" BASIS,\n"
+				+ "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"
+				+ "See the License for the specific language governing permissions and\n"
+				+ "limitations under the License.";
+	}
+
+	// ////////////////////////////////////////////////////////////////////////////////////
+	// You have reached the internal API of Crouton.
+	// If you do not plan to develop for Crouton there is nothing of interest
+	// below here.
+	// ////////////////////////////////////////////////////////////////////////////////////
+
+	/**
 	 * @return <code>true</code> if the {@link Crouton} is being displayed, else
 	 *         <code>false</code>.
 	 */
 	boolean isShowing() {
-		return (activity != null) && (croutonView != null)
-				&& (croutonView.getParent() != null);
+		return (null != activity)
+				&& (isCroutonViewNotNull() || isCustomViewNotNull());
 	}
 
-	/**
-	 * Removes the activity reference this {@link Crouton} is holding
-	 */
+	private boolean isCroutonViewNotNull() {
+		return (null != croutonView) && (null != croutonView.getParent());
+	}
+
+	private boolean isCustomViewNotNull() {
+		return (null != customView) && (null != customView.getParent());
+	}
+
+	/** Removes the activity reference this {@link Crouton} is holding */
 	void detachActivity() {
 		activity = null;
 	}
 
-	/**
-	 * Removes the viewGroup reference this {@link Crouton} is holding
-	 */
+	/** Removes the viewGroup reference this {@link Crouton} is holding */
 	void detachViewGroup() {
 		viewGroup = null;
 	}
 
-	/**
-	 * Removes the lifecycleCallback reference this {@link Crouton} is holding
-	 */
+	/** Removes the lifecycleCallback reference this {@link Crouton} is holding */
 	void detachLifecycleCallback() {
 		lifecycleCallback = null;
 	}
 
-	/**
-	 * @return the lifecycleCallback
-	 */
+	/** @return the lifecycleCallback */
 	LifecycleCallback getLifecycleCallback() {
 		return lifecycleCallback;
 	}
 
-	/**
-	 * @return the style
-	 */
+	/** @return the style */
 	Style getStyle() {
 		return style;
 	}
 
-	/**
-	 * @return the activity
-	 */
+	/** @return this croutons configuration */
+	Configuration getConfiguration() {
+		if (null == configuration) {
+			configuration = getStyle().configuration;
+		}
+		return configuration;
+	}
+
+	/** @return the activity */
 	Activity getActivity() {
 		return activity;
 	}
 
-	/**
-	 * @return the viewGroup
-	 */
+	/** @return the viewGroup */
 	ViewGroup getViewGroup() {
 		return viewGroup;
 	}
 
-	/**
-	 * @return the text
-	 */
+	/** @return the text */
 	CharSequence getText() {
 		return text;
 	}
 
-	/**
-	 * @return the view
-	 */
+	/** @return the view */
 	View getView() {
 		// return the custom view if one exists
-		if (this.customView != null) {
+		if (null != this.customView) {
 			return this.customView;
 		}
 
 		// if already setup return the view
-		if (this.croutonView == null) {
+		if (null == this.croutonView) {
 			initializeCroutonView();
 		}
 
 		return croutonView;
+	}
+
+	private void measureCroutonView() {
+		View view = getView();
+		int widthSpec;
+		if (viewGroup != null) {
+			widthSpec = View.MeasureSpec.makeMeasureSpec(
+					viewGroup.getMeasuredWidth(), View.MeasureSpec.AT_MOST);
+		} else {
+			widthSpec = View.MeasureSpec.makeMeasureSpec(activity.getWindow()
+					.getDecorView().getMeasuredWidth(),
+					View.MeasureSpec.AT_MOST);
+		}
+
+		view.measure(widthSpec, View.MeasureSpec.makeMeasureSpec(0,
+				View.MeasureSpec.UNSPECIFIED));
 	}
 
 	private void initializeCroutonView() {
@@ -716,6 +842,10 @@ public final class Crouton {
 
 	private FrameLayout initializeCroutonViewGroup(Resources resources) {
 		FrameLayout croutonView = new FrameLayout(this.activity);
+
+		if (null != onClickListener) {
+			croutonView.setOnClickListener(onClickListener);
+		}
 
 		final int height;
 		if (this.style.heightDimensionResId > 0) {
@@ -779,7 +909,7 @@ public final class Crouton {
 
 		// only setup image if one is requested
 		ImageView image = null;
-		if ((this.style.imageDrawable != null) || (this.style.imageResId != 0)) {
+		if ((null != this.style.imageDrawable) || (0 != this.style.imageResId)) {
 			image = initializeImageView();
 			contentView.addView(image, image.getLayoutParams());
 		}
@@ -789,7 +919,7 @@ public final class Crouton {
 		RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		if (image != null) {
+		if (null != image) {
 			textParams.addRule(RelativeLayout.RIGHT_OF, image.getId());
 		}
 		contentView.addView(text, textParams);
@@ -799,8 +929,7 @@ public final class Crouton {
 	private TextView initializeTextView(final Resources resources) {
 		TextView text = new TextView(this.activity);
 		text.setId(TEXT_ID);
-		text.setText(this.text);
-		//text.setTypeface(Typeface.DEFAULT_BOLD);
+		text.setText(this.text);		
 		text.setTypeface(this.messageTypeface, Typeface.BOLD);
 		text.setGravity(this.style.gravity);
 
@@ -849,7 +978,7 @@ public final class Crouton {
 		image.setScaleType(this.style.imageScaleType);
 
 		// set the image drawable if not null
-		if (this.style.imageDrawable != null) {
+		if (null != this.style.imageDrawable) {
 			image.setImageDrawable(this.style.imageDrawable);
 		}
 
@@ -866,16 +995,36 @@ public final class Crouton {
 				RelativeLayout.TRUE);
 		imageParams
 				.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+
+		image.setLayoutParams(imageParams);
+
 		return image;
 	}
 
-	@Override
-	public String toString() {
-		return "Crouton{" + "text=" + text + ", style=" + style
-				+ ", customView=" + customView + ", activity=" + activity
-				+ ", viewGroup=" + viewGroup + ", croutonView=" + croutonView
-				+ ", inAnimation=" + inAnimation + ", outAnimation="
-				+ outAnimation + ", lifecycleCallback=" + lifecycleCallback
-				+ '}';
+	/**
+	 * Akshay
+	 */
+	private Typeface messageTypeface;
+
+	public static Crouton makeText(Activity activity, CharSequence text,
+			Style style, Typeface typeface) {
+		return new Crouton(activity, text, style, typeface);
+	}
+
+	private Crouton(Activity activity, CharSequence text, Style style,
+			Typeface typeface) {
+		if (typeface == null)
+			throw new IllegalArgumentException("Typeface cant be null");
+		if ((activity == null) || (text == null) || (style == null)) {
+			throw new IllegalArgumentException(
+					"Null parameters are not accepted");
+		}
+
+		this.activity = activity;
+		this.viewGroup = null;
+		this.text = text;
+		this.style = style;
+		this.customView = null;
+		this.messageTypeface = typeface;
 	}
 }

@@ -51,7 +51,7 @@
 
 	<modules>
 		<module>library</module>
-		<module>sample</module>
+	<!--	<module>sample</module>-->
 	</modules>
 
 	<properties>
